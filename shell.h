@@ -14,6 +14,8 @@
 
 #define MAX_ARG 125
 
+extern char **environ;
+
 int executecmd(char *argsC[]);
 int commandread(void);
 char *erasenull(char *string, int leng);

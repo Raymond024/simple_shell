@@ -16,25 +16,23 @@ int commandread(void)
 		if (feof(stdin))
 		{
 			free(buffer);
-			exit(0);
+			exit(EXIT_SUCCESS);
 		}
 		else
 		{
-			perror("failed to read user input");
+			perror("Error reading user input");
 			free(buffer);
 		}
 	}
 	command = erasenull(buffer, s);
-
-	if (strcmp(command, "exit") == 0)
-	{
-		free(buffer);
-		exit(0);
-	}
+	if
+		(strcmp(command, "exit") == 0)
+		{
+			free(buffer);
+			exit(EXIT_SUCCESS);
+		}
 	tokenizer(command, argsC);
-
 	executecmd(argsC);
-
 	free(buffer);
 	return (s);
 }

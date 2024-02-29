@@ -8,6 +8,8 @@ char *get_path(const char *program_name)
 {
 	char *path = getenv("PATH");
 	char *token = strtok(path, ":");
+	size_t token_len;
+	size_t program_len;
 
 	if (path == NULL)
 	{
@@ -17,19 +19,31 @@ char *get_path(const char *program_name)
 
 	while (token != NULL)
 	{
-		char *full_path = malloc(strlen(token) + strlen(program_name) + 2);
-
-		if (full_path == NULL)
+		token_len = strlen(token);
+		program_len = strlen(program_name);
+		if (token_len + 1 + program_len + 1 <= PATH_MAX)
 		{
-			perror("Error allocating memory");
+			char *full_path = malloc(token_len + 1 + program_len + 1);
+
+			if (full_path == NULL)
+			{
+				perror("Error allocating memory");
+				return (NULL);
+			}
+			strcpy(full_path, token);
+			strcat(full_path, "/");
+			strcat(full_path, program_name);
+			if (access(full_path, F_OK) == 0)
+			{
+				return (full_path);
+			}
+			free(full_path);
+		}
+		else
+		{
+			perror("Path length exceeds limit");
 			return (NULL);
 		}
-		sprintf(full_path, "%s/%s", token, program_name);
-		if (access(full_path, F_OK) == 0)
-		{
-			return (full_path);
-		}
-		free(full_path);
 		token = strtok(NULL, ":");
 	}
 	return (NULL);
